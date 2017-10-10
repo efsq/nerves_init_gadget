@@ -41,6 +41,19 @@ defmodule Nerves.InitGadget.NetworkManager do
     Logger.debug("IP address for #{state.ifname} changed to #{new_ip}")
     update_mdns(new_ip, state.opts.mdns_domain)
     update_net_kernel(new_ip, state.opts)
+    ip_tuple = to_ip_tuple(new_ip)
+    :timer.sleep(15_000)
+    Nerves.InitGadget.send_arp(ip_tuple)
+    :timer.sleep(100)
+    Nerves.InitGadget.send_arp(ip_tuple)
+    :timer.sleep(100)
+    Nerves.InitGadget.send_arp(ip_tuple)
+    :timer.sleep(100)
+    Nerves.InitGadget.send_grat_arp(ip_tuple)
+    :timer.sleep(100)
+    Nerves.InitGadget.send_grat_arp(ip_tuple)
+    :timer.sleep(100)
+    Nerves.InitGadget.send_grat_arp(ip_tuple)
     {:noreply, %{state | ip: new_ip}}
   end
 
